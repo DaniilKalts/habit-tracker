@@ -11,7 +11,6 @@ class HabitTracker:
         self.root = root
         self.root.title("Habit Tracker")
         self.root.geometry("450x400")
-
         self.habits = []
         self.completed_today = set()
         self.load_data()
@@ -28,6 +27,7 @@ class HabitTracker:
 
         self.entry = ttk.Entry(control_frame, width=25)
         self.entry.grid(row=0, column=0, padx=(0, 5), pady=(0, 10))
+        self.entry.bind("<Return>", lambda e: self.add_habit())
 
         self.add_button = ttk.Button(control_frame, text="Add Habit", command=self.add_habit)
         self.add_button.grid(row=0, column=1, pady=(0, 10))
