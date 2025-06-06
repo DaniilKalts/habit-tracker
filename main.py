@@ -6,6 +6,9 @@ class HabitTracker:
         self.root.title("Habit Tracker")
         self.root.geometry("400x300")
 
+        self.entry = tk.Entry(root, width=30)
+        self.entry.pack(pady=10)
+
 def main():
     root = tk.Tk()
     app = HabitTracker(root)
