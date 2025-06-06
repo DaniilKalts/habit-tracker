@@ -1,0 +1,5 @@
+# Hide virtual environment
+.venv/
+
+# Hide IDE specific configuration
+.idea/
