@@ -10,7 +10,7 @@ class HabitTracker:
     def __init__(self, root):
         self.root = root
         self.root.title("Habit Tracker")
-        self.root.geometry("550x500")
+        self.root.geometry("550x550")
         self.habits = []
         self.history = {}
         self.completed_today = set()
@@ -146,6 +146,34 @@ class HabitTracker:
         self.display_today_tab()
         self.display_completed_tab()
 
+    def current_streak(self, name):
+        dates = sorted(self.history.get(name, []), reverse=True)
+        streak = 0
+        today = datetime.date.today()
+        for d_str in dates:
+            d = datetime.date.fromisoformat(d_str)
+            if today - d == datetime.timedelta(days=streak):
+                streak += 1
+            else:
+                break
+        return streak
+
+    def max_streak(self, name):
+        dates = sorted(self.history.get(name, []))
+        max_s = 0
+        current = 0
+        prev = None
+        for d_str in dates:
+            d = datetime.date.fromisoformat(d_str)
+            if prev and (d - prev == datetime.timedelta(days=1)):
+                current += 1
+            else:
+                current = 1
+            prev = d
+            if current > max_s:
+                max_s = current
+        return max_s
+
     def display_top_habits(self):
         for w in self.top_frame.winfo_children():
             w.destroy()
@@ -178,11 +206,11 @@ class HabitTracker:
         if not self.habits:
             ttk.Label(self.stats_list_frame, text="Нет привычек").pack(pady=10)
             return
+        today = datetime.date.today()
         for habit in self.habits:
             frame = ttk.Frame(self.stats_list_frame)
             frame.pack(fill="x", pady=5, padx=5)
-            ttk.Label(frame, text=f"{habit}").pack(anchor="w")
-            today = datetime.date.today()
+            ttk.Label(frame, text=habit).pack(anchor="w")
             circles = ""
             for i in range(6, -1, -1):
                 day = (today - datetime.timedelta(days=i)).isoformat()
@@ -191,6 +219,9 @@ class HabitTracker:
                 else:
                     circles += "○ "
             ttk.Label(frame, text=circles.strip()).pack(anchor="w", pady=(2, 0))
+            cs = self.current_streak(habit)
+            ms = self.max_streak(habit)
+            ttk.Label(frame, text=f"Current: {cs}  Max: {ms}").pack(anchor="w", pady=(2, 0))
 
     def display_completed_tab(self):
         for w in self.completed_list_frame.winfo_children():
